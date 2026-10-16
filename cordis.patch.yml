@@ -1,0 +1,15 @@
+# Cara A: dedicated isolated skill-filesystem instance for obra/superpowers.
+# includeDefaultRoots=false keeps this provider scanning ONLY the superpowers
+# skills directory (skill-filesystem constructor: an isolated provider must see
+# only its explicit roots). The component package itself resolves through the
+# harness installation anchor (the launcher's own package), not this profile:
+# the profile's node_modules does not carry @deepseek-ai/dsh-skill-filesystem.
+# The skills path is absolute by design: this wrapper is a local-only plugin.
+- insert:
+    - id: superpowers-skills
+      name: '@deepseek-ai/dsh-skill-filesystem'
+      config:
+        providerName: superpowers
+        includeDefaultRoots: false
+        customSkillDirs:
+          - /home/administrator/agent-workspace/dsh-custom/plugins/dsh-superpowers/skills
