@@ -4,7 +4,12 @@
 # only its explicit roots). The component package itself resolves through the
 # harness installation anchor (the launcher's own package), not this profile:
 # the profile's node_modules does not carry @deepseek-ai/dsh-skill-filesystem.
-# The skills path is absolute by design: this wrapper is a local-only plugin.
+#
+# The skills root is resolved when this row's fiber loads, so the bundle carries
+# no machine-specific path. Set DSH_SUPERPOWERS_SKILLS_DIR to your superpowers
+# checkout, or place (or link) the skills at $DSH_HOME/superpowers/skills.
+# A wrong value fails silently: the root contributes no candidates and the
+# skills simply do not appear.
 - insert:
     - id: superpowers-skills
       name: '@deepseek-ai/dsh-skill-filesystem'
@@ -12,4 +17,6 @@
         providerName: superpowers
         includeDefaultRoots: false
         customSkillDirs:
-          - /home/administrator/agent-workspace/dsh-custom/plugins/dsh-superpowers/skills
+          - !!js >-
+            process.env.DSH_SUPERPOWERS_SKILLS_DIR
+            || (process.env.DSH_HOME || (process.env.HOME || '') + '/.dsh') + '/superpowers/skills'
